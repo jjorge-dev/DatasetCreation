@@ -106,10 +106,10 @@
 
       <label>Alias del participante</label>
       <input id="alias" placeholder="ej. alumno07" autocomplete="off">
-
+      <!--
       <label>URL de Google Apps Script</label>
       <input id="endpoint" placeholder="Pega aquí la URL /exec">
-
+      -->
       <button id="startBtn">Empezar</button>
 
       <p class="hint">No uses nombres reales. Usa un alias. La URL de Apps Script la dará el profesor.</p>
@@ -140,7 +140,6 @@
     const labels = ["S", "N"];
 
     let alias = "";
-    let endpoint = "";
     let currentLabelIndex = 0;
     let currentSample = 1;
     let drawing = false;
@@ -150,7 +149,7 @@
     const done = document.getElementById("done");
 
     const aliasInput = document.getElementById("alias");
-    const endpointInput = document.getElementById("endpoint");
+    const ENDPOINT = "https://script.google.com/macros/s/AKfycbzBqHi76fBLg7cAOhMEl6cdp3AOdX5D38EBpCqetuZk4AYL01nGqInPwM09hvBAZoupcQ/exec";
     const startBtn = document.getElementById("startBtn");
 
     const taskTitle = document.getElementById("taskTitle");
@@ -218,19 +217,13 @@
 
     startBtn.addEventListener("click", () => {
       alias = aliasInput.value.trim();
-      endpoint = endpointInput.value.trim();
 
       if (!alias) {
         alert("Introduce un alias.");
         return;
       }
 
-      if (!endpoint || !endpoint.startsWith("https://")) {
-        alert("Introduce la URL pública de Apps Script terminada en /exec.");
-        return;
-      }
 
-      localStorage.setItem("sn_endpoint", endpoint);
       localStorage.setItem("sn_alias", alias);
 
       setup.classList.add("hidden");
@@ -264,6 +257,7 @@
           Apps Script a veces da problemas con CORS si se usa application/json.
           Por eso se envía como text/plain y se parsea manualmente en Apps Script.
         */
+        /*
         await fetch(endpoint, {
           method: "POST",
           mode: "no-cors",
@@ -272,7 +266,16 @@
           },
           body: JSON.stringify(payload)
         });
-
+        */
+        await fetch(ENDPOINT, {
+          method: "POST",
+          mode: "no-cors",
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          },
+          body: JSON.stringify(payload)
+        });
+        
         statusText.textContent = "Guardado";
         statusText.className = "ok";
 
@@ -296,7 +299,6 @@
       }
     });
 
-    endpointInput.value = localStorage.getItem("sn_endpoint") || "";
     aliasInput.value = localStorage.getItem("sn_alias") || "";
 
     resetCanvas();
