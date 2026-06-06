@@ -124,6 +124,7 @@
       <div>
         <button class="secondary" id="clearBtn">Borrar</button>
         <button id="saveBtn">Guardar dibujo</button>
+        <button id="saveBtn">Guardar dibujo</button>
       </div>
 
       <p id="status"></p>
@@ -236,6 +237,16 @@
       resetCanvas();
       statusText.textContent = "";
     });
+
+  document.getElementById("downloadBtn").addEventListener("click", () => {
+    const label = labels[currentLabelIndex];
+    const filename = `${alias || "dibujo"}_${label}_${currentSample}.png`;
+  
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
 
     document.getElementById("saveBtn").addEventListener("click", async () => {
       const label = labels[currentLabelIndex];
