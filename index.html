@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Taller ML - Recolector S/N</title>
+  <title>Taller ML - Creación del dataset S/N</title>
   <style>
     body {
       font-family: system-ui, Arial, sans-serif;
@@ -185,6 +185,36 @@
         x: (touch.clientX - rect.left) * (canvas.width / rect.width),
         y: (touch.clientY - rect.top) * (canvas.height / rect.height)
       };
+    }
+
+    
+    function getCurrentFilename(suffix = "") {
+      const label = labels[currentLabelIndex];
+      const safeAlias = (alias || "dibujo").replace(/[^a-zA-Z0-9_-]+/g, "_");
+      return `${safeAlias}_${label}_${String(currentSample).padStart(3, "0")}${suffix}.png`;
+    }
+    
+    function downloadDataUrl(dataUrl, filename) {
+      const link = document.createElement("a");
+      link.download = filename;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function getCanvas28x28DataUrl() {
+      const smallCanvas = document.createElement("canvas");
+      smallCanvas.width = 28;
+      smallCanvas.height = 28;
+
+      const smallCtx = smallCanvas.getContext("2d");
+      smallCtx.fillStyle = "white";
+      smallCtx.fillRect(0, 0, 28, 28);
+      smallCtx.imageSmoothingEnabled = false;
+      smallCtx.drawImage(canvas, 0, 0, 28, 28);
+
+      return smallCanvas.toDataURL("image/png");
     }
 
     function startDrawing(event) {
